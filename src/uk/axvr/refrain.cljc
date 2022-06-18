@@ -36,7 +36,7 @@
 
 (defn deep-merge-with
   "Like `clojure.core/merge-with`, but recursively merges."
-  ([f coll] coll)
+  ([_ coll] coll)
   ([f c1 c2]
    (if (coll? c1)
      (if (and (coll? c2) (map? c1))
