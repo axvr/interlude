@@ -7,23 +7,24 @@
 
 ;;; Strings
 
-(defn trim-end
-  "Trim sub from the end of s."
-  [s sub]
-  (if (and (string? s)
-           (string? sub)
-           (str/ends-with? s sub))
-    (subs s 0 (- (count s)
-                 (count sub)))
+(defn trim-start
+  "Trim substr from the start of s."
+  [s substr]
+  {:pre [(string? s)
+         (string? substr)]
+   :post [(string? %)]}
+  (if (str/starts-with? s substr)
+    (subs s (count substr))
     s))
 
-(defn trim-start
-  "Trim sub from the start of s."
-  [s sub]
-  (if (and (string? s)
-           (string? sub)
-           (str/starts-with? s sub))
-    (subs s (count sub))
+(defn trim-end
+  "Trim substr from the end of s."
+  [s substr]
+  {:pre [(string? s)
+         (string? substr)]
+   :post [(string? %)]}
+  (if (str/ends-with? s substr)
+    (subs s 0 (- (count s) (count substr)))
     s))
 
 
@@ -32,7 +33,7 @@
 (defn in?
   "Returns true if coll contains elm."
   [coll elm]
-  (some #(= elm %) coll))
+  (boolean (some #(= elm %) coll)))
 
 (defn deep-merge-with
   "Like `clojure.core/merge-with`, but recursively merges."
@@ -69,7 +70,7 @@
 (defn assoc*
   "Like `clojure.core/assoc`, but won't assoc if key or val is nil."
   [m & kvs]
-  (into m
+  (into (or m {})
         (comp (partition-all 2)
               (filter (partial not-any? nil?)))
         kvs))
