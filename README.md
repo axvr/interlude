@@ -3,8 +3,8 @@
 Collection of small, but useful Clojure utilities I've created that
 I frequently find myself replicating across programs.
 
-Essentially this is my own personal version of [medley](https://github.com/weavejester/medley),
-but it can work along-side it or instead of it.
+Essentially this is my own personal version of [Medley](https://github.com/weavejester/medley),
+however they can work along-side each other.
 
 
 ## Installation
@@ -17,7 +17,7 @@ Add the following to your `deps.edn` file:
 
 ```clojure
 {:deps {uk.axvr/refrain
-         {:git/sha ""
+         {:git/sha "82b6e15db29b35275d6c8a98053cf16d540291c1"
           :git/url "https://github.com/axvr/refrain.git"}}}
 ```
 
