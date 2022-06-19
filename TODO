@@ -1,3 +1,3 @@
 - Tests
-- regexp? (like in Medley)
+- Run CI tests on ClojureScript too.
 - queue and queue? (like in Medley)

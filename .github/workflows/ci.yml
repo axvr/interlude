@@ -15,7 +15,7 @@ jobs:
           clj-kondo: latest
 
       - name: Run clj-kondo
-        run: clj-kondo --lint src
+        run: clj-kondo --lint src test
 
   test:
     name: Test

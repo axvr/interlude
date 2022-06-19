@@ -5,27 +5,51 @@
                       [clojure.java.io :as io]])))
 
 
-;;; Strings
+;;; Core
 
-(defn trim-start
-  "Trim substr from the start of s."
-  [s substr]
-  {:pre [(string? s)
-         (string? substr)]
-   :post [(string? %)]}
-  (if (str/starts-with? s substr)
-    (subs s (count substr))
-    s))
+(defn assoc*
+  "Like `clojure.core/assoc`, but won't assoc if key or val is nil."
+  [m & kvs]
+  (into (or m {})
+        (comp (partition-all 2)
+              (filter (partial not-any? nil?)))
+        kvs))
 
-(defn trim-end
-  "Trim substr from the end of s."
-  [s substr]
-  {:pre [(string? s)
-         (string? substr)]
-   :post [(string? %)]}
-  (if (str/ends-with? s substr)
-    (subs s 0 (- (count s) (count substr)))
-    s))
+;; Modified from: https://github.com/clojure/core.incubator/blob/4f31a7e176fcf4cc2be65589be113fc082243f5b/src/main/clojure/clojure/core/incubator.clj#L63-L75
+(defn dissoc-in
+  "Dissociates an entry from a nested associative structure returning a new
+  nested structure.  ks is a sequence of keys.  Any empty maps that result
+  will not be present in the new structure."
+  [m [k & ks]]
+  (if ks
+    (if-let [nextmap (get m k)]
+      (let [newmap (dissoc-in nextmap ks)]
+        (if (seq newmap)
+          (assoc m k newmap)
+          (dissoc m k)))
+      m)
+    (dissoc m k)))
+
+(defn derefable?
+  "Returns true if `clojure.core/deref` can be called on ref."
+  [ref]
+  #?(:clj  (or (instance? clojure.lang.IDeref ref)
+               (instance? clojure.lang.IBlockingDeref ref))
+     :cljr (or (instance? clojure.lang.IDeref ref)
+               (instance? clojure.lang.IBlockingDeref ref))
+     :cljs (or (satisfies? IDeref ref)
+               (satisfies? IDerefWithTimeout ref))))
+
+#?(:clj
+   (defn regexp?
+     "Returns true if x is a Java regular expression pattern."
+     [x]
+     (instance? java.util.regex.Pattern x))
+   :cljr
+   (defn regexp?
+     "Returns true if x is a .NET regular expression pattern."
+     [x]
+     (instance? System.Text.RegularExpressions.Regex x)))
 
 
 ;;; Collections
@@ -49,11 +73,13 @@
            (deep-merge-with f c1 c2)
            cs)))
 
-(def deep-merge
+(defn deep-merge
   "Like `clojure.core/merge`, but recursively merges."
-  (partial deep-merge-with (fn [_ x] x)))
+  [& colls]
+  (when (seq colls)
+    (apply deep-merge-with (fn [_ x] x) colls)))
 
-;;; https://github.com/clojure/spec-alpha2/blob/74ada9d5111aa17c27fdef9c626ac6b4b1551a3e/src/test/clojure/clojure/test_clojure/spec.clj#L18,L25
+;; https://github.com/clojure/spec-alpha2/blob/74ada9d5111aa17c27fdef9c626ac6b4b1551a3e/src/test/clojure/clojure/test_clojure/spec.clj#L18,L25
 (defn submap?
   "Returns true if map1 is a subset of map2."
   [map1 map2]
@@ -65,23 +91,28 @@
     (= map1 map2)))
 
 
+;;; Strings
+
+(defn trim-start
+  "Trim substr from the start of s."
+  [s substr]
+  {:pre [(string? s)
+         (string? substr)]}
+  (if (str/starts-with? s substr)
+    (subs s (count substr))
+    s))
+
+(defn trim-end
+  "Trim substr from the end of s."
+  [s substr]
+  {:pre [(string? s)
+         (string? substr)]}
+  (if (str/ends-with? s substr)
+    (subs s 0 (- (count s) (count substr)))
+    s))
+
+
 ;;; Other
-
-(defn assoc*
-  "Like `clojure.core/assoc`, but won't assoc if key or val is nil."
-  [m & kvs]
-  (into (or m {})
-        (comp (partition-all 2)
-              (filter (partial not-any? nil?)))
-        kvs))
-
-(defn dissoc-in
-  "Like `clojure.core/assoc-in`, but for dissoc."
-  [m ks]
-  (case (count ks)
-    0 m
-    1 (dissoc m (first ks))
-    (update-in m (butlast ks) dissoc (last ks))))
 
 (defmacro when-let*
   "Short circuiting version of `clojure.core/when-let` on multiple binding
@@ -106,13 +137,6 @@
 ;;; Java
 
 #?(:clj
-   (defn derefable?
-     "Returns true if `clojure.core/deref` can be called on ref."
-     [ref]
-     (or (instance? clojure.lang.IDeref ref)
-         (instance? clojure.lang.IBlockingDeref ref))))
-
-#?(:clj
    (defn date-compare
      "Compare date1 to date2 using op.  Example ops: < > <= >= ="
      ([op date1 date2]
@@ -129,20 +153,3 @@
      (when-let [rsc (some-> path io/resource)]
        (with-open [rdr (io/reader rsc)]
          (edn/read (java.io.PushbackReader. rdr))))))
-
-
-;;; Debugging
-
-(defn |>
-  "Perform a side-effect operation on an intermediate value within
-  a thread-first macro."
-  [x f]
-  (f x)
-  x)
-
-(defn |>>
-  "Perform a side-effect operation on an intermediate value within
-  a thread-last macro."
-  [f x]
-  (f x)
-  x)
