@@ -130,15 +130,15 @@
     (is (false? (r/in? [1 2 3 4] 5)))))
 
 ;; TODO
+(deftest submap?
+  (testing ""))
+
+;; TODO
 (deftest deep-merge-with
   (testing ""))
 
 ;; TODO
 (deftest deep-merge
-  (testing ""))
-
-;; TODO
-(deftest submap?
   (testing ""))
 
 

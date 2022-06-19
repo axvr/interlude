@@ -12,7 +12,7 @@
   [m & kvs]
   (into (or m {})
         (comp (partition-all 2)
-              (filter (partial not-any? nil?)))
+              (remove (partial some nil?)))
         kvs))
 
 ;; Modified from: https://github.com/clojure/core.incubator/blob/4f31a7e176fcf4cc2be65589be113fc082243f5b/src/main/clojure/clojure/core/incubator.clj#L63-L75
@@ -33,12 +33,10 @@
 (defn derefable?
   "Returns true if `clojure.core/deref` can be called on ref."
   [ref]
-  #?(:clj  (or (instance? clojure.lang.IDeref ref)
-               (instance? clojure.lang.IBlockingDeref ref))
-     :cljr (or (instance? clojure.lang.IDeref ref)
-               (instance? clojure.lang.IBlockingDeref ref))
-     :cljs (or (satisfies? IDeref ref)
-               (satisfies? IDerefWithTimeout ref))))
+  #?(:cljs    (or (satisfies? IDeref ref)
+                  (satisfies? IDerefWithTimeout ref))
+     :default (or (instance? clojure.lang.IDeref ref)
+                  (instance? clojure.lang.IBlockingDeref ref))))
 
 #?(:clj
    (defn regexp?
@@ -59,6 +57,17 @@
   [coll elm]
   (boolean (some #(= elm %) coll)))
 
+;; https://github.com/clojure/spec-alpha2/blob/74ada9d5111aa17c27fdef9c626ac6b4b1551a3e/src/test/clojure/clojure/test_clojure/spec.clj#L18,L25
+(defn submap?
+  "Returns true if map1 is a subset of map2."
+  [map1 map2]
+  (if (and (map? map1) (map? map2))
+    (every? (fn [[k v]]
+              (and (contains? map2 k)
+                   (submap? v (get map2 k))))
+            map1)
+    (= map1 map2)))
+
 (defn deep-merge-with
   "Like `clojure.core/merge-with`, but recursively merges."
   ([_ coll] coll)
@@ -78,17 +87,6 @@
   [& colls]
   (when (seq colls)
     (apply deep-merge-with (fn [_ x] x) colls)))
-
-;; https://github.com/clojure/spec-alpha2/blob/74ada9d5111aa17c27fdef9c626ac6b4b1551a3e/src/test/clojure/clojure/test_clojure/spec.clj#L18,L25
-(defn submap?
-  "Returns true if map1 is a subset of map2."
-  [map1 map2]
-  (if (and (map? map1) (map? map2))
-    (every? (fn [[k v]]
-              (and (contains? map2 k)
-                   (submap? v (get map2 k))))
-            map1)
-    (= map1 map2)))
 
 
 ;;; Strings
@@ -125,9 +123,12 @@
           `(do ~@body)))))
 
 (defn macro-body-opts
-  "For macros, extract a map of options from the body.  If there is more than
-  one parameter, the first item will be treated as an options map if it is
-  a map."
+  "Helper for creating macros that accept an optional map of options in their
+  body.  Call this function in your macro on the rest-body param and it will
+  return a vector containing the option map and the rest of the body.
+
+  An option map will be found if there were more than one form in the body and
+  the first form is a map."
   [[opts & body :as params]]
   (if (and (seq body) (map? opts))
     [opts body]
