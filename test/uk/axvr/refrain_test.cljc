@@ -1,5 +1,5 @@
 (ns uk.axvr.refrain-test
-  "Unit tests for the \"uk.axvr.refrain\" namespace/library."
+  "Unit tests for the `uk.axvr.refrain` namespace/library."
   (:require [clojure.test :refer [deftest testing is]]
             [uk.axvr.refrain :as r]))
 
@@ -127,11 +127,43 @@
     (is (true? (r/in? [1 2 3 4] 4))))
   (testing "Returns false if coll does not contain element."
     (is (false? (r/in? [1 2 3 4] 0)))
-    (is (false? (r/in? [1 2 3 4] 5)))))
+    (is (false? (r/in? [1 2 3 4] 5))))
+  (testing "Returns false on nil input collection."
+    (is (false? (r/in? nil nil)))
+    (is (false? (r/in? nil 1))))
+  (testing "Behaves like `clojure.core/contains?` on hash-sets."
+    (is (true? (r/in? #{:foo :bar} :foo)))
+    (is (true? (r/in? #{nil} nil)))
+    (is (false? (r/in? #{:foo} :bar)))
+    (is (false? (r/in? #{} :foo))))
+  (testing "Matches key-value pairs in hash-maps."
+    (is (true? (r/in? {:foo 1} [:foo 1])))
+    (is (false? (r/in? {:bar 1} [:bar 2]))))
+  (testing "Tests if strings contains specific character."
+    (is (true? (r/in? "foo:bar" \:)))
+    (is (false? (r/in? "foo:bar" \c)))))
 
-;; TODO
 (deftest submap?
-  (testing ""))
+  (testing "Returns true on identical inputs."
+    (is (true? (r/submap? nil nil)))
+    (is (true? (r/submap? {} {})))
+    (is (true? (r/submap? {:foo 1} {:foo 1})))
+    (is (true? (r/submap? 1 1)))
+    (is (true? (r/submap? {:foo [1 2 3]} {:foo [1 2 3]}))))
+  (testing "Returns false on different inputs."
+    (is (false? (r/submap? nil :foo)))
+    (is (false? (r/submap? {} #{})))
+    (is (false? (r/submap? {:foo 2} {:foo 1})))
+    (is (false? (r/submap? 1 2)))
+    (is (false? (r/submap? {:foo [1 3 3]} {:foo [1 2 3]}))))
+  (testing "Returns true on matching submap."
+    (is (true? (r/submap? {:foo {:bar 1}} {:foo {:bar 1} :bar 2})))
+    (is (true? (r/submap? {:foo {:bar 1} :woz {:1234 [1 2 3 4] :hi :there}}
+                          {:foo {:bar 1 :hello 4} :bar 2 :woz {:1234 [1 2 3 4] :hi :there :foo nil}}))))
+  (testing "Returns false on no matching submap."
+    (is (false? (r/submap? {:foo {:bar 1}} {:foo {:fail 1} :bar 2})))
+    (is (false? (r/submap? {:foo {:bar 1} :woz {:1234 [1 2 3 4] :hi :there}}
+                           {:foo {:bar 1 :hello 4} :bar 2 :woz {:1234 [1 3 3 4] :hi :there :foo nil}})))))
 
 ;; TODO
 (deftest deep-merge-with
