@@ -11,7 +11,8 @@
 (ns uk.axvr.refrain-test
   "Unit tests for the `uk.axvr.refrain` namespace/library."
   (:require [clojure.test :refer [deftest testing is]]
-            [uk.axvr.refrain :as r]))
+            [uk.axvr.refrain :as r])
+  #?(:clj (:import [java.time Instant])))
 
 
 ;;; Core
@@ -325,10 +326,39 @@
 
 ;;; Java
 
-;; TODO
-(deftest date-compare
-  (testing ""))
+#?(:clj
+   (deftest compare-to
+     (testing "Compare strings."
+       (is (true? (r/compare-to < "1" "2" "3")))
+       (is (true? (r/compare-to > "3" "2" "1")))
+       (is (true? (r/compare-to not= "1" "2")))
+       (is (false? (r/compare-to = "1" "2")))
+       (is (false? (r/compare-to < "a" "b" "c" "c")))
+       (is (true? (r/compare-to <= "a" "b" "c" "c")))
+       (is (true? (r/compare-to < "a")))
+       (is (true? (r/compare-to < "hello" "hey" "hi")))
+       (is (true? (r/compare-to < "799c29c2-1688-40e7-80d3-05cef2b8b7d3"
+                                  "cd201847-a9d1-4aa9-87d5-e2a9d37d8c8a")))
+       (is (= ["c" "c" "b" "b" "a"]
+              (sort (r/compare-to >=) ["a" "b" "c" "b" "c"]))))
+     (testing "Compare numbers."
+       (is (true? (r/compare-to < 1 2 3 4)))
+       (is (false? (r/compare-to > 1 2 3 4)))
+       (is (false? (r/compare-to < 1 1 2 3 4)))
+       (is (true? (r/compare-to <= 1 1 2 3 4)))
+       (is (= [1 1 2 3 5 5 6 8 9]
+              (sort (r/compare-to <=) [1 5 2 6 8 9 3 1 5]))))
+     (testing "Compare dates."
+       (let [inst1 (Instant/now)
+             inst2 (.minusSeconds inst1 2)
+             inst3 (.plusSeconds inst1 10)]
+         (is (true? (r/compare-to = inst1 inst1)))
+         (is (true? (r/compare-to < inst2 inst1 inst3)))
+         (is (false? (r/compare-to < inst1 inst2)))
+         (is (= [inst2 inst1 inst3]
+                (sort (r/compare-to <) [inst1 inst2 inst3])))))))
 
 ;; TODO
-(deftest read-edn-resource
-  (testing ""))
+#?(:clj
+   (deftest read-edn-resource
+     (testing "")))

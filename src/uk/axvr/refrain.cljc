@@ -157,14 +157,18 @@
 ;;; Java
 
 #?(:clj
-   (defn date-compare
-     "Compare date1 to date2 using op.  Example ops: < > <= >= ="
-     ([op date1 date2]
-      (op (.compareTo date1 date2) 0))
-     ([op date1 date2 & dates]
-      (reduce (partial date-compare op)
-              (date-compare op date1 date2)
-              dates))))
+   (defn compare-to
+     "Compare multiple java.lang.Comparable objects to each other with op.
+
+     Example ops: < > <= >= = not="
+     ([op]
+      (partial compare-to op))
+     ([op obj & objs]
+      (->> objs
+           (cons obj)
+           (partition 2 1)
+           (map (comp #(op % 0) (partial apply compare)))
+           (every? true?)))))
 
 #?(:clj
    (defn read-edn-resource
