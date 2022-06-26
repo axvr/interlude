@@ -81,25 +81,31 @@
             map1)
     (= map1 map2)))
 
-(defn deep-merge-with
-  "Like `clojure.core/merge-with`, but recursively merges."
-  ([_ coll] coll)
-  ([f c1 c2]
-   (if (coll? c1)
+(defn- deep-merge-with'
+  "Internal deep-merge-with algorithm."
+  [f c1 c2]
+  (if (coll? c1)
      (if (and (coll? c2) (map? c1))
-       (merge-with (partial deep-merge-with f) c1 c2)
+       (merge-with (partial deep-merge-with' f) c1 c2)
        (f c1 c2))
      c2))
+
+(defn deep-merge-with
+  "Like `clojure.core/merge-with`, but recursively merges maps."
+  ([_ coll] coll)
+  ([f c1 c2]
+   (when (or c1 c2)
+     (deep-merge-with' f c1 (or c2 {}))))
   ([f c1 c2 & cs]
    (reduce (partial deep-merge-with f)
            (deep-merge-with f c1 c2)
            cs)))
 
 (defn deep-merge
-  "Like `clojure.core/merge`, but recursively merges."
+  "Like `clojure.core/merge`, but recursively merges maps."
   [& colls]
-  (when (seq colls)
-    (apply deep-merge-with (fn [_ x] x) colls)))
+  (when-let [[coll & colls] (filter some? colls)]
+    (apply deep-merge-with (fn [_ x] x) coll colls)))
 
 
 ;;; Strings

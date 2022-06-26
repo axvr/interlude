@@ -175,13 +175,108 @@
     (is (false? (r/submap? {:foo {:bar 1} :woz {:1234 [1 2 3 4] :hi :there}}
                            {:foo {:bar 1 :hello 4} :bar 2 :woz {:1234 [1 3 3 4] :hi :there :foo nil}})))))
 
-;; TODO
 (deftest deep-merge-with
-  (testing ""))
+  (testing "Returns nil on nil input."
+    (is (= nil (r/deep-merge-with conj nil)))
+    (is (= nil (r/deep-merge-with conj nil nil)))
+    (is (= nil (r/deep-merge-with conj nil nil nil))))
+  (testing "If a map was passed in, return a map."
+    (is (= {} (r/deep-merge-with conj {})))
+    (is (= {} (r/deep-merge-with conj {} {})))
+    (is (= {} (r/deep-merge-with conj {} {} {})))
+    (is (= {} (r/deep-merge-with conj {} nil {})))
+    (is (= {} (r/deep-merge-with conj nil {})))
+    (is (= {} (r/deep-merge-with conj nil {} nil)))
+    (is (= {} (r/deep-merge-with conj nil nil {})))
+    (is (= {} (r/deep-merge-with (fn [_ x] x) {} nil)))
+    (is (= {} (r/deep-merge-with (fn [_ x] x) nil {})))
+    (is (= {} (r/deep-merge-with (fn [_ x] x) nil {} nil)))
+    (is (= {} (r/deep-merge-with (fn [_ x] x) nil nil {})))
+    (is (= {:foo 1} (r/deep-merge-with conj nil {:foo 1})))
+    (is (= {:foo 1} (r/deep-merge-with conj {:foo 1} nil)))
+    (is (= {:foo 1} (r/deep-merge-with conj {:foo 1} {}))))
+  (testing "Shallow merge with `clojure.core/conj` merge strategy."
+    (is (= [1 2 3] (r/deep-merge-with conj [1] 2 3)))
+    (is (= {:foo 1} (r/deep-merge-with conj {:foo 2} {} {:foo 1})))
+    (is (= {:foo 1 :bar true} (r/deep-merge-with conj {:bar true} {:foo 1})))
+    (is (= {:bar [1 2 3] :foo 1} (r/deep-merge-with conj {:foo 2} {:bar [1 2 3]} {:foo 1})))
+    (is (= {:bar [1 2 3] :foo 1} (r/deep-merge-with conj {:foo 2 :bar [1 2 3]} {:foo 1})))
+    (is (= {:bar [1 2 3] :foo 1} (r/deep-merge-with conj {:foo 2} {:foo 1 :bar [1 2 3]})))
+    (is (= {:bar [1 2 3] :foo [2 1]} (r/deep-merge-with conj {:foo [2]} {:foo 1 :bar [1 2 3]}))))
+  (testing "Shallow merge with \"replace\" merge strategy."
+    (let [replace (fn [_ x] x)]
+      (is (= [3] (r/deep-merge-with replace [1] [2] [3])))
+      (is (= {:foo 1} (r/deep-merge-with replace {:foo 2} {} {:foo 1})))
+      (is (= {:foo 1 :bar true} (r/deep-merge-with replace {:bar true} {:foo 1})))
+      (is (= {:bar [1 2 3] :foo 1} (r/deep-merge-with replace {:foo 2} {:bar [1 2 3]} {:foo 1})))
+      (is (= {:bar [1 2 3] :foo 1} (r/deep-merge-with replace {:foo 2 :bar [1 2 3]} {:foo 1})))
+      (is (= {:bar [1 2 3] :foo 1} (r/deep-merge-with replace {:foo 2} {:foo 1 :bar [1 2 3]})))
+      (is (= {:bar [1 2 3] :foo 1} (r/deep-merge-with replace {:foo [2]} {:foo 1 :bar [1 2 3]})))
+      (is (= {:bar [1 2 3] :foo nil} (r/deep-merge-with replace {:foo [2]} {:foo nil :bar [1 2 3]})))))
+  (testing "Deep merge with `clojure.core/conj` merge strategy."
+    (is (= {:foo {:bar {:biz 42} :woz 12 :world [1 2 3]} :hi "there"}
+           (r/deep-merge-with conj
+                              {:foo {:bar {} :woz 12}}
+                              {:foo {:world [1 2]} :hi "there"}
+                              {:foo {:bar {:biz 42}}}
+                              {:foo {:world 3}})))
+    (is (= {:foo {:bar {:biz 42} :woz 12 :world [1 2 3]} :hi "there"}
+           (r/deep-merge-with conj
+                              {:foo {:bar {} :woz 12} :hi "there?"}
+                              {:foo {:world [1 2]} :hi "there"}
+                              {:foo {:bar {:biz 42}}}
+                              {:foo {:world 3}}))))
+  (testing "Deep merge with \"replace\" merge strategy."
+    (let [replace (fn [_ x] x)]
+      (is (= {:foo {:bar {:biz 42} :woz 12 :world [1 2 3]} :hi "there"}
+             (r/deep-merge-with replace
+                                {:foo {:bar {} :woz 12}}
+                                {:foo {:world [1 2]} :hi "there"}
+                                {:foo {:bar {:biz 42}}}
+                                {:foo {:world [1 2 3]}})))
+      (is (= {:foo {:bar {:biz 42} :woz 12 :world [1 2 3]} :hi "there"}
+             (r/deep-merge-with replace
+                                {:foo {:bar {} :woz 12} :hi "there?"}
+                                {:foo {:world [1 2]} :hi "there"}
+                                {:foo {:bar {:biz 42}}}
+                                {:foo {:world [1 2 3]}}))))))
 
-;; TODO
 (deftest deep-merge
-  (testing ""))
+  (testing "Returns nil on nil input."
+    (is (= nil (r/deep-merge nil)))
+    (is (= nil (r/deep-merge nil nil)))
+    (is (= nil (r/deep-merge nil nil nil))))
+  (testing "If a map was passed in, return a map."
+    (is (= {} (r/deep-merge {})))
+    (is (= {} (r/deep-merge {} {})))
+    (is (= {} (r/deep-merge {} {} {})))
+    (is (= {} (r/deep-merge {} nil {})))
+    (is (= {} (r/deep-merge nil {})))
+    (is (= {} (r/deep-merge nil {} nil)))
+    (is (= {} (r/deep-merge nil nil {})))
+    (is (= {:foo 1} (r/deep-merge nil {:foo 1})))
+    (is (= {:foo 1} (r/deep-merge {:foo 1} nil)))
+    (is (= {:foo 1} (r/deep-merge {:foo 1} {}))))
+  (testing "Shallow merge behaves like `deep-merge-with (fn [_ x] x) ...`."
+    (is (= [3] (r/deep-merge [1] [2] [3])))
+    (is (= {:foo 1} (r/deep-merge {:foo 2} {} {:foo 1})))
+    (is (= {:foo 1 :bar true} (r/deep-merge {:bar true} {:foo 1})))
+    (is (= {:bar [1 2 3] :foo 1} (r/deep-merge {:foo 2} {:bar [1 2 3]} {:foo 1})))
+    (is (= {:bar [1 2 3] :foo 1} (r/deep-merge {:foo 2 :bar [1 2 3]} {:foo 1})))
+    (is (= {:bar [1 2 3] :foo 1} (r/deep-merge {:foo 2} {:foo 1 :bar [1 2 3]})))
+    (is (= {:bar [1 2 3] :foo 1} (r/deep-merge {:foo [2]} {:foo 1 :bar [1 2 3]})))
+    (is (= {:bar [1 2 3] :foo nil} (r/deep-merge {:foo [2]} {:foo nil :bar [1 2 3]}))))
+  (testing "Deep merge behaves like `deep-merge-with (fn [_ x] x) ...`."
+    (is (= {:foo {:bar {:biz 42} :woz 12 :world [1 2 3]} :hi "there"}
+           (r/deep-merge {:foo {:bar {} :woz 12}}
+                         {:foo {:world [1 2]} :hi "there"}
+                         {:foo {:bar {:biz 42}}}
+                         {:foo {:world [1 2 3]}})))
+    (is (= {:foo {:bar {:biz 42} :woz 12 :world [1 2 3]} :hi "there"}
+           (r/deep-merge {:foo {:bar {} :woz 12} :hi "there?"}
+                         {:foo {:world [1 2]} :hi "there"}
+                         {:foo {:bar {:biz 42}}}
+                         {:foo {:world [1 2 3]}})))))
 
 
 ;;; Strings
