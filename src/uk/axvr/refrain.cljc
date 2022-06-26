@@ -1,3 +1,14 @@
+;;;; All rights reserved.
+;;;;
+;;;; Copyright © 2022 Alex Vear.
+;;;; Copyright © 2009, 2016 Rich Hickey.
+;;;;
+;;;;   The use and distribution terms for this software are covered by the
+;;;;   Eclipse Public License 1.0 which can be found in the LICENCE file at the
+;;;;   root of this distribution.  By using this software in any fashion, you are
+;;;;   agreeing to be bound by the terms of this license.  You must not remove
+;;;;   this notice, or any other, from this software.
+
 (ns uk.axvr.refrain
   "Collection of useful Clojure utilities."
   (:require [clojure.string :as str]
@@ -15,7 +26,8 @@
               (remove (partial some nil?)))
         kvs))
 
-;; Modified from: https://github.com/clojure/core.incubator/blob/4f31a7e176fcf4cc2be65589be113fc082243f5b/src/main/clojure/clojure/core/incubator.clj#L63-L75
+;; Copyright © 2009 Rich Hickey.
+;; https://github.com/clojure/core.incubator/blob/4f31a7e176fcf4cc2be65589be113fc082243f5b/src/main/clojure/clojure/core/incubator.clj#L63-L75
 (defn dissoc-in
   "Dissociates an entry from a nested associative structure returning a new
   nested structure.  ks is a sequence of keys.  Any empty maps that result
@@ -57,6 +69,7 @@
   [coll elm]
   (boolean (some #(= elm %) coll)))
 
+;; Copyright © 2016 Rich Hickey.
 ;; https://github.com/clojure/spec-alpha2/blob/74ada9d5111aa17c27fdef9c626ac6b4b1551a3e/src/test/clojure/clojure/test_clojure/spec.clj#L18,L25
 (defn submap?
   "Returns true if map1 is a subset of map2."
