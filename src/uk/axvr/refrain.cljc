@@ -157,12 +157,12 @@
 ;;; Java
 
 #?(:clj
-   (defn compare-to
-     "Compare multiple java.lang.Comparable objects to each other with op.
+   (defn contrast
+     "Contrast multiple java.lang.Comparable objects to each other with op.
 
      Example ops: < > <= >= = not="
      ([op]
-      (partial compare-to op))
+      (partial contrast op))
      ([op obj & objs]
       (->> objs
            (cons obj)

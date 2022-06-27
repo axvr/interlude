@@ -327,36 +327,36 @@
 ;;; Java
 
 #?(:clj
-   (deftest compare-to
-     (testing "Compare strings."
-       (is (true? (r/compare-to < "1" "2" "3")))
-       (is (true? (r/compare-to > "3" "2" "1")))
-       (is (true? (r/compare-to not= "1" "2")))
-       (is (false? (r/compare-to = "1" "2")))
-       (is (false? (r/compare-to < "a" "b" "c" "c")))
-       (is (true? (r/compare-to <= "a" "b" "c" "c")))
-       (is (true? (r/compare-to < "a")))
-       (is (true? (r/compare-to < "hello" "hey" "hi")))
-       (is (true? (r/compare-to < "799c29c2-1688-40e7-80d3-05cef2b8b7d3"
+   (deftest contrast
+     (testing "Contrast strings."
+       (is (true? (r/contrast < "1" "2" "3")))
+       (is (true? (r/contrast > "3" "2" "1")))
+       (is (true? (r/contrast not= "1" "2")))
+       (is (false? (r/contrast = "1" "2")))
+       (is (false? (r/contrast < "a" "b" "c" "c")))
+       (is (true? (r/contrast <= "a" "b" "c" "c")))
+       (is (true? (r/contrast < "a")))
+       (is (true? (r/contrast < "hello" "hey" "hi")))
+       (is (true? (r/contrast < "799c29c2-1688-40e7-80d3-05cef2b8b7d3"
                                   "cd201847-a9d1-4aa9-87d5-e2a9d37d8c8a")))
        (is (= ["c" "c" "b" "b" "a"]
-              (sort (r/compare-to >=) ["a" "b" "c" "b" "c"]))))
-     (testing "Compare numbers."
-       (is (true? (r/compare-to < 1 2 3 4)))
-       (is (false? (r/compare-to > 1 2 3 4)))
-       (is (false? (r/compare-to < 1 1 2 3 4)))
-       (is (true? (r/compare-to <= 1 1 2 3 4)))
+              (sort (r/contrast >=) ["a" "b" "c" "b" "c"]))))
+     (testing "Contrast numbers."
+       (is (true? (r/contrast < 1 2 3 4)))
+       (is (false? (r/contrast > 1 2 3 4)))
+       (is (false? (r/contrast < 1 1 2 3 4)))
+       (is (true? (r/contrast <= 1 1 2 3 4)))
        (is (= [1 1 2 3 5 5 6 8 9]
-              (sort (r/compare-to <=) [1 5 2 6 8 9 3 1 5]))))
-     (testing "Compare dates."
+              (sort (r/contrast <=) [1 5 2 6 8 9 3 1 5]))))
+     (testing "Contrast dates."
        (let [inst1 (Instant/now)
              inst2 (.minusSeconds inst1 2)
              inst3 (.plusSeconds inst1 10)]
-         (is (true? (r/compare-to = inst1 inst1)))
-         (is (true? (r/compare-to < inst2 inst1 inst3)))
-         (is (false? (r/compare-to < inst1 inst2)))
+         (is (true? (r/contrast = inst1 inst1)))
+         (is (true? (r/contrast < inst2 inst1 inst3)))
+         (is (false? (r/contrast < inst1 inst2)))
          (is (= [inst2 inst1 inst3]
-                (sort (r/compare-to <) [inst1 inst2 inst3])))))))
+                (sort (r/contrast <) [inst1 inst3 inst2])))))))
 
 ;; TODO
 #?(:clj
