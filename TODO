@@ -1,4 +1,4 @@
 - Tests
 - v0.1 - once all functions have been tested.
-- Run CI tests on ClojureScript too.
+- Run CI tests on ClojureScript and ClojureCLR too?
 - queue and queue? (like in Medley)

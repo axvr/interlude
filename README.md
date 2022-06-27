@@ -1,10 +1,12 @@
 # Refrain
 
-Collection of small, but useful Clojure utilities I've created that
-I frequently find myself replicating across programs.
+Collection of small, but useful Clojure, ClojureScript and ClojureCLR functions
+and macros I've created that I frequently find myself replicating across
+programs.
 
-Essentially this is my own personal version of [Medley](https://github.com/weavejester/medley),
-however they can work along-side each other.
+Essentially this library is my own personal version of
+[Medley](https://github.com/weavejester/medley), but you can use both at the
+same time as they mostly contain different things.
 
 
 ## Installation
@@ -29,9 +31,9 @@ Add the following to your `deps.edn` file:
 
 The use and distribution terms for this software are covered by the
 [Eclipse Public License 1.0](https://www.eclipse.org/legal/epl-v10.html)
-which can be found in the `LICENCE` file.  By using this software in any
-fashion, you are agreeing to be bound by the terms of this license.  You must
-not remove this notice, or any other, from this software.
+which can be found in the accompanying `LICENCE` file.  By using this software
+in any fashion, you are agreeing to be bound by the terms of this license.  You
+must not remove this notice, or any other, from this software.
 
 The author is unaware of any patent claims which may affect the use,
 modification or distribution of this software.
