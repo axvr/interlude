@@ -61,6 +61,17 @@
      [x]
      (instance? System.Text.RegularExpressions.Regex x)))
 
+(defn contrast
+  "Contrast multiple comparable objects with each other with op.  (Wrapper
+  around `clojure.core/compare`.)  Example ops: < > <= >= = not="
+  ([op]
+   (partial contrast op))
+  ([op obj & objs]
+   (->> (cons obj objs)
+        (partition 2 1)
+        (map (comp #(op % 0) (partial apply compare)))
+        (every? true?))))
+
 
 ;;; Collections
 
@@ -152,23 +163,6 @@
   (if (and (seq body) (map? opts))
     [opts body]
     [{} params]))
-
-
-;;; Java
-
-#?(:clj
-   (defn contrast
-     "Contrast multiple java.lang.Comparable objects to each other with op.
-
-     Example ops: < > <= >= = not="
-     ([op]
-      (partial contrast op))
-     ([op obj & objs]
-      (->> objs
-           (cons obj)
-           (partition 2 1)
-           (map (comp #(op % 0) (partial apply compare)))
-           (every? true?)))))
 
 #?(:clj
    (defn read-edn-resource

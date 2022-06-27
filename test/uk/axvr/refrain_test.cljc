@@ -127,6 +127,38 @@
        (is (false? (r/regexp? "")))
        (is (false? (r/regexp? "\\w+"))))))
 
+(deftest contrast
+  (testing "Contrast strings."
+    (is (true? (r/contrast < "1" "2" "3")))
+    (is (true? (r/contrast > "3" "2" "1")))
+    (is (true? (r/contrast not= "1" "2")))
+    (is (false? (r/contrast = "1" "2")))
+    (is (false? (r/contrast < "a" "b" "c" "c")))
+    (is (true? (r/contrast <= "a" "b" "c" "c")))
+    (is (true? (r/contrast < "a")))
+    (is (true? (r/contrast < "hello" "hey" "hi")))
+    (is (true? (r/contrast < "799c29c2-1688-40e7-80d3-05cef2b8b7d3"
+                           "cd201847-a9d1-4aa9-87d5-e2a9d37d8c8a")))
+    (is (= ["c" "c" "b" "b" "a"]
+           (sort (r/contrast >=) ["a" "b" "c" "b" "c"]))))
+  (testing "Contrast numbers."
+    (is (true? (r/contrast < 1 2 3 4)))
+    (is (false? (r/contrast > 1 2 3 4)))
+    (is (false? (r/contrast < 1 1 2 3 4)))
+    (is (true? (r/contrast <= 1 1 2 3 4)))
+    (is (= [1 1 2 3 5 5 6 8 9]
+           (sort (r/contrast <=) [1 5 2 6 8 9 3 1 5]))))
+  #?(:clj
+     (testing "Contrast dates."
+       (let [inst1 (Instant/now)
+             inst2 (.minusSeconds inst1 2)
+             inst3 (.plusSeconds inst1 10)]
+         (is (true? (r/contrast = inst1 inst1)))
+         (is (true? (r/contrast < inst2 inst1 inst3)))
+         (is (false? (r/contrast < inst1 inst2)))
+         (is (= [inst2 inst1 inst3]
+                (sort (r/contrast <) [inst1 inst3 inst2])))))))
+
 
 ;;; Collections
 
@@ -322,41 +354,6 @@
 ;; TODO
 (deftest macro-body-opts
   (testing ""))
-
-
-;;; Java
-
-#?(:clj
-   (deftest contrast
-     (testing "Contrast strings."
-       (is (true? (r/contrast < "1" "2" "3")))
-       (is (true? (r/contrast > "3" "2" "1")))
-       (is (true? (r/contrast not= "1" "2")))
-       (is (false? (r/contrast = "1" "2")))
-       (is (false? (r/contrast < "a" "b" "c" "c")))
-       (is (true? (r/contrast <= "a" "b" "c" "c")))
-       (is (true? (r/contrast < "a")))
-       (is (true? (r/contrast < "hello" "hey" "hi")))
-       (is (true? (r/contrast < "799c29c2-1688-40e7-80d3-05cef2b8b7d3"
-                                  "cd201847-a9d1-4aa9-87d5-e2a9d37d8c8a")))
-       (is (= ["c" "c" "b" "b" "a"]
-              (sort (r/contrast >=) ["a" "b" "c" "b" "c"]))))
-     (testing "Contrast numbers."
-       (is (true? (r/contrast < 1 2 3 4)))
-       (is (false? (r/contrast > 1 2 3 4)))
-       (is (false? (r/contrast < 1 1 2 3 4)))
-       (is (true? (r/contrast <= 1 1 2 3 4)))
-       (is (= [1 1 2 3 5 5 6 8 9]
-              (sort (r/contrast <=) [1 5 2 6 8 9 3 1 5]))))
-     (testing "Contrast dates."
-       (let [inst1 (Instant/now)
-             inst2 (.minusSeconds inst1 2)
-             inst3 (.plusSeconds inst1 10)]
-         (is (true? (r/contrast = inst1 inst1)))
-         (is (true? (r/contrast < inst2 inst1 inst3)))
-         (is (false? (r/contrast < inst1 inst2)))
-         (is (= [inst2 inst1 inst3]
-                (sort (r/contrast <) [inst1 inst3 inst2])))))))
 
 ;; TODO
 #?(:clj
