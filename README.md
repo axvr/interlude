@@ -19,7 +19,7 @@ Add the following to your `deps.edn` file:
 
 ```clojure
 {:deps {uk.axvr/refrain
-        {:git/sha "d005de46b689c7bacf9bd59b6c68b0d8bcb93e74"
+        {:git/tag "v0.1" :git/sha "008716e"
          :git/url "https://github.com/axvr/refrain.git"}}}
 ```
 
