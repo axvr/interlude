@@ -1,4 +1,4 @@
-- Tests
+- Test functions that work on maps also work on records.
 - v0.1 - once all functions have been tested.
 - Run CI tests on ClojureScript and ClojureCLR too?
 - queue and queue? (like in Medley)

@@ -347,15 +347,79 @@
 
 ;;; Other
 
-;; TODO
 (deftest when-let*
-  (testing ""))
+  (testing "Returns expected result."
+    (is (= 42 (r/when-let* [foo 6]
+                (* foo 7))))
+    (is (= 42 (r/when-let* [foo 6 bar 7]
+                (* foo bar))))
+    (is (= 42 (r/when-let* [x 3 y 7 z 2]
+                (is (= x 3))
+                (is (= y 7))
+                (is (= z 2))
+                (* x y z))))
+    (is (= 42 (r/when-let* [x 2
+                            y 7
+                            z (* 3 x)]
+                (is (= x 2))
+                (is (= y 7))
+                (is (= z 6))
+                (* y z)))))
+  (testing "Does not evaluate body and returns nil."
+    (is (nil? (r/when-let* [foo nil]
+                (is (not (nil? foo)))
+                (* foo 7))))
+    (is (nil? (r/when-let* [foo nil bar 7]
+                (is (not (nil? foo)))
+                (is (not= 7 bar))
+                (* foo bar))))
+    (is (nil? (r/when-let* [foo 6 bar false]
+                (is (not= 6 foo))
+                (is (not (or (false? bar) (nil? bar)))))))
+    (is (nil? (r/when-let* [foo 6 bar 7 biz (when (= foo 7) 5)]
+                (is (not= 6 foo))
+                (is (not= 7 bar))
+                (is (not (or (false? bar) (nil? bar) (= 5 bar))))))))
+  (testing "Sort-circuits evaluation of binding forms and returns nil."
+    (let [ran? (atom 0)]
+      (is (zero? @ran?))
+      (is (nil? (r/when-let* [x 12
+                              y (when (< x 3) 5)
+                              z (swap! ran? inc)]
+                   (is (not= 12 x))
+                   (is (not= 5 y))
+                   (is (zero? z))
+                   (swap! ran? inc)
+                   (is (zero? @ran?)))))
+      (is (zero? @ran?)))))
 
-;; TODO
 (deftest macro-body-opts
-  (testing ""))
+  (testing "No hash-map as first item in body, default opts to empty hash-map."
+    (is (= [{} `((println "hello world") (+ 1 2 3))]
+           (r/macro-body-opts `((println "hello world") (+ 1 2 3)))))
+    (is (= [{} `((println "hello world") {:foo 1} {:bar 42})]
+           (r/macro-body-opts `((println "hello world") {:foo 1} {:bar 42})))))
+  (testing "More than one item in body and first item is hash-map, extract it."
+    (is (= [{:foo [4 :five 6] :bar 42} `((println "hello world") (+ 1 2 3))]
+           (r/macro-body-opts `({:foo [4 :five 6] :bar 42}
+                                (println "hello world") (+ 1 2 3)))))
+    (is (= [{:foo `(+ 4 5 6)} `((+ 1 2 3))]
+           (r/macro-body-opts `({:foo (+ 4 5 6)} (+ 1 2 3)))))
+    (is (= [{:foo [4 :five 6] :bar 42} `((println "hello world") {:foo 1} {:bar 42})]
+           (r/macro-body-opts `({:foo [4 :five 6] :bar 42}
+                                (println "hello world") {:foo 1} {:bar 42})))))
+  (testing "Body of item 1 does not match hash-maps as options map."
+    (is (= [{} `((+ 1 2 3))]
+           (r/macro-body-opts `((+ 1 2 3)))))
+    (is (= [{} `({:foo (+ 4 5 6)})]
+           (r/macro-body-opts `({:foo (+ 4 5 6)}))))
+    (is (= [{} `({:foo [4 :five 6] :bar 42})]
+           (r/macro-body-opts `({:foo [4 :five 6] :bar 42}))))))
 
-;; TODO
 #?(:clj
    (deftest read-edn-resource
-     (testing "")))
+     (testing "Fetches and reads EDN file from JVM resource."
+       (is (= {:foo true :bar {:hi ["hello" "world"]} :woz 42}
+              (r/read-edn-resource "data.edn"))))
+     (testing "File does not exist, return nil."
+       (is (= nil (r/read-edn-resource "no_file.edn"))))))

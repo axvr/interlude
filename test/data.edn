@@ -1,0 +1,4 @@
+;;; EDN resource file used in tests.
+{:foo true
+ :bar {:hi ["hello" "world"]}
+ :woz 42}
