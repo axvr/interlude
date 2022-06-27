@@ -14,6 +14,8 @@
             [uk.axvr.refrain :as r])
   #?(:clj (:import [java.time Instant])))
 
+(defrecord TestRecord [foo])
+
 
 ;;; Core
 
@@ -40,6 +42,11 @@
     (is (= {:foo 1} (r/assoc* nil :foo 1 :bar nil)))
     (is (= {:foo 2 nil 3} (r/assoc* {:foo 1 nil 3} :foo 2)))
     (is (= {:foo 4 :biz 3} (r/assoc* {:foo 4 :biz 1} nil 1 nil 2 :biz 3))))
+  (testing "Works on records."
+    (is (= (map->TestRecord {:foo 12 :bar 42})
+           (r/assoc* (map->TestRecord {}) :foo 12 :bar 42 :biz nil)))
+    (is (instance? TestRecord
+                   (r/assoc* (map->TestRecord {}) :foo 12 :bar 42 :biz nil))))
   (testing "Throws exception on non-even number of key value pairs."
     (is (thrown? IllegalArgumentException (r/assoc* {} :foo)))
     (is (thrown? IllegalArgumentException (r/assoc* {} :foo 1 :bar)))))
@@ -77,7 +84,12 @@
            (r/dissoc-in {:foo {:foo 12 :bar 42}} [:foo :foo])))
     (is (= {:foo {:bar 42 :foo 12}}
            (r/dissoc-in {:foo {:foo 12 :bar 42}} [:bar :foo])))
-    (is (= {:bar [1 2 3]} (r/dissoc-in {:foo {:baz 42} :bar [1 2 3]} [:foo :baz])))))
+    (is (= {:bar [1 2 3]} (r/dissoc-in {:foo {:baz 42} :bar [1 2 3]} [:foo :baz]))))
+  (testing "Works on records."
+    (is (= (map->TestRecord {:foo {:bar 42} :biz 4})
+           (r/dissoc-in (map->TestRecord {:foo {:bar 42 :hi {:hello "world"}} :biz 4}) [:foo :hi :hello])))
+    (is (instance? TestRecord
+                   (r/dissoc-in (map->TestRecord {:foo {:bar 42 :hi {:hello "world"}} :biz 4}) [:foo :hi :hello])))))
 
 (deftest derefable?
   (testing "True on result of delay."
@@ -206,7 +218,12 @@
   (testing "Returns false on no matching submap."
     (is (false? (r/submap? {:foo {:bar 1}} {:foo {:fail 1} :bar 2})))
     (is (false? (r/submap? {:foo {:bar 1} :woz {:1234 [1 2 3 4] :hi :there}}
-                           {:foo {:bar 1 :hello 4} :bar 2 :woz {:1234 [1 3 3 4] :hi :there :foo nil}})))))
+                           {:foo {:bar 1 :hello 4} :bar 2 :woz {:1234 [1 3 3 4] :hi :there :foo nil}}))))
+  (testing "Works with records."
+    (is (true? (r/submap? (map->TestRecord {:foo {:bar 1}}) {:foo {:bar 1 :biz 12} :woz 42})))
+    (is (true? (r/submap? {:foo {:bar 1}} (map->TestRecord {:foo {:bar 1 :biz 12} :woz 42}))))
+    (is (false? (r/submap? (map->TestRecord {:foo {:bar 2}}) {:foo {:bar 1 :biz 12} :woz 42})))
+    (is (false? (r/submap? {:foo {:bar 2}} (map->TestRecord {:foo {:bar 1 :biz 12} :woz 42}))))))
 
 (deftest deep-merge-with
   (testing "Returns nil on nil input."
@@ -272,7 +289,14 @@
                                 {:foo {:bar {} :woz 12} :hi "there?"}
                                 {:foo {:world [1 2]} :hi "there"}
                                 {:foo {:bar {:biz 42}}}
-                                {:foo {:world [1 2 3]}}))))))
+                                {:foo {:world [1 2 3]}})))))
+  (testing "Works on records."
+    (is (= (map->TestRecord {:foo 1 :bar [1 2 3]})
+           (r/deep-merge-with conj (map->TestRecord {:foo 1 :bar [1 2]}) {:bar 3})))
+    (is (instance? TestRecord
+                   (r/deep-merge-with conj (map->TestRecord {:foo 1 :bar [1 2]}) {:bar 3})))
+    (is (not (instance? TestRecord
+                        (r/deep-merge-with conj {:foo 1 :bar [1 2]} (map->TestRecord {:bar 3})))))))
 
 (deftest deep-merge
   (testing "Returns nil on nil input."
@@ -309,7 +333,14 @@
            (r/deep-merge {:foo {:bar {} :woz 12} :hi "there?"}
                          {:foo {:world [1 2]} :hi "there"}
                          {:foo {:bar {:biz 42}}}
-                         {:foo {:world [1 2 3]}})))))
+                         {:foo {:world [1 2 3]}}))))
+  (testing "Works on records."
+    (is (= (map->TestRecord {:foo 1 :bar 3})
+           (r/deep-merge (map->TestRecord {:foo 1 :bar [1 2]}) {:bar 3})))
+    (is (instance? TestRecord
+                   (r/deep-merge (map->TestRecord {:foo 1 :bar [1 2]}) {:bar 3})))
+    (is (not (instance? TestRecord
+                        (r/deep-merge {:foo 1 :bar [1 2]} (map->TestRecord {:bar 3})))))))
 
 
 ;;; Strings
