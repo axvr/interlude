@@ -1,12 +1,16 @@
 # Refrain
 
-Collection of small, but useful Clojure, ClojureScript and ClojureCLR functions
-and macros I've created that I frequently find myself replicating across
-programs.
+Collection of small, but useful [Clojure][], [ClojureScript][] and
+[ClojureCLR][] functions and macros I've created that I frequently find myself
+replicating across programs.
 
-Essentially this library is my own personal version of
-[Medley](https://github.com/weavejester/medley), but you can use both at the
-same time as they mostly contain different things.
+Essentially this library is my own personal version of [Medley](), but you can
+use both at the same time as they mostly contain different things.
+
+[Clojure]: https://clojure.org
+[ClojureScript]: https://clojurescript.org
+[ClojureCLR]: https://clojure.org/about/clojureclr
+[Medley]: https://github.com/weavejester/medley
 
 
 ## Installation
@@ -15,12 +19,31 @@ same time as they mostly contain different things.
 > Refrain is still a work-in-progress.  Until it reaches v1.0, expect backwards
 > incompatible changes.
 
+
+### tools.deps
+
 Add the following to your `deps.edn` file:
 
 ```clojure
 {:deps {uk.axvr/refrain
         {:git/tag "v0.1" :git/sha "008716e"
          :git/url "https://github.com/axvr/refrain.git"}}}
+```
+
+
+### Leiningen
+
+To install Refrain with Leiningen, you will need to use
+[lein-git-down](https://github.com/reifyhealth/lein-git-down) as
+Refrain is not distributed as a JAR. This is an example `project.clj` file:
+
+```clojure
+(defproject my-project "0.1.0"
+  :plugins      [[reifyhealth/lein-git-down "0.4.1"]]
+  :middleware   [lein-git-down.plugin/inject-properties]
+  :repositories [["public-github" {:url "git://github.com"}]]
+  :git-down     {uk.axvr/refrain {:coordinates axvr/refrain}}
+  :dependencies [[uk.axvr/refrain "008716e9b4be9eb2f96a834096672254c084f6d2"]])
 ```
 
 
