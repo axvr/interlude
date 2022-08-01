@@ -17,8 +17,8 @@ jobs:
       - name: Run clj-kondo
         run: clj-kondo --lint src test
 
-  test:
-    name: Test
+  test-clj:
+    name: Test (Clojure)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -31,3 +31,18 @@ jobs:
 
       - name: Run tests
         run: clojure -X:test
+
+  test-cljs:
+    name: Test (ClojureScript)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install Clojure
+        uses: DeLaGuardo/setup-clojure@7.0
+        with:
+          cli: 1.11.1.1139
+
+      - name: Run tests
+        run: clojure -M:cljs-test

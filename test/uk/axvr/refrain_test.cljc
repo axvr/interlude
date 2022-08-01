@@ -12,7 +12,8 @@
   "Unit tests for the `uk.axvr.refrain` namespace/library."
   (:require [clojure.test :refer [deftest testing is]]
             [uk.axvr.refrain :as r])
-  #?(:clj (:import [java.time Instant])))
+  #?(:clj  (:import [java.time Instant])
+     :cljs (:require-macros [uk.axvr.refrain :as r])))
 
 (defrecord TestRecord [foo])
 
@@ -47,9 +48,10 @@
            (r/assoc* (map->TestRecord {}) :foo 12 :bar 42 :biz nil)))
     (is (instance? TestRecord
                    (r/assoc* (map->TestRecord {}) :foo 12 :bar 42 :biz nil))))
-  (testing "Throws exception on non-even number of key value pairs."
-    (is (thrown? IllegalArgumentException (r/assoc* {} :foo)))
-    (is (thrown? IllegalArgumentException (r/assoc* {} :foo 1 :bar)))))
+  #?(:clj
+     (testing "Throws exception on non-even number of key value pairs."
+       (is (thrown? IllegalArgumentException (r/assoc* {} :foo)))
+       (is (thrown? IllegalArgumentException (r/assoc* {} :foo 1 :bar))))))
 
 (deftest dissoc-in
   (testing "No route, return input."
@@ -88,8 +90,9 @@
   (testing "Works on records."
     (is (= (map->TestRecord {:foo {:bar 42} :biz 4})
            (r/dissoc-in (map->TestRecord {:foo {:bar 42 :hi {:hello "world"}} :biz 4}) [:foo :hi :hello])))
-    (is (instance? TestRecord
-                   (r/dissoc-in (map->TestRecord {:foo {:bar 42 :hi {:hello "world"}} :biz 4}) [:foo :hi :hello])))))
+    #?(:clj
+       (is (instance? TestRecord
+                      (r/dissoc-in (map->TestRecord {:foo {:bar 42 :hi {:hello "world"}} :biz 4}) [:foo :hi :hello]))))))
 
 (deftest derefable?
   (testing "True on result of delay."
@@ -355,10 +358,11 @@
     (is (= "Hello world" (r/trim-start "Hello world" ""))))
   (testing "Does nothing on empty string."
     (is (= "" (r/trim-start "" "world"))))
-  (testing "Throws exception on non-string input string."
-    (is (thrown? AssertionError (r/trim-start 123 ""))))
-  (testing "Throw exception on non-string substring."
-    (is (thrown? AssertionError (r/trim-start "" nil)))))
+  #?@(:clj
+      [(testing "Throws exception on non-string input string."
+         (is (thrown? AssertionError (r/trim-start 123 ""))))
+       (testing "Throw exception on non-string substring."
+         (is (thrown? AssertionError (r/trim-start "" nil))))]))
 
 (deftest trim-end
   (testing "Trims the end of string."
@@ -370,10 +374,11 @@
     (is (= "Hello world" (r/trim-end "Hello world" ""))))
   (testing "Does nothing on empty string."
     (is (= "" (r/trim-end "" "world"))))
-  (testing "Throws exception on non-string input string."
-    (is (thrown? AssertionError (r/trim-end 123 ""))))
-  (testing "Throw exception on non-string substring."
-    (is (thrown? AssertionError (r/trim-end "" nil)))))
+  #?@(:clj
+      [(testing "Throws exception on non-string input string."
+         (is (thrown? AssertionError (r/trim-end 123 ""))))
+       (testing "Throw exception on non-string substring."
+         (is (thrown? AssertionError (r/trim-end "" nil))))]))
 
 
 ;;; Other
