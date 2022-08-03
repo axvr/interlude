@@ -15,11 +15,6 @@ use both at the same time as they mostly contain different things.
 
 ## Installation
 
-> **Warning**
-> Refrain is still a work-in-progress.  Until it reaches v1.0, expect backwards
-> incompatible changes.
-
-
 ### tools.deps
 
 Add the following to your `deps.edn` file:
