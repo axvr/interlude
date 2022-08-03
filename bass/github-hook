@@ -1,3 +1,4 @@
+#!/usr/bin/env bass
 ;; vim: ft=bass :
 
 (def *memos* *dir*/bass.lock)
@@ -20,11 +21,6 @@
       (with-mount gitlibs-cache /root/.gitlibs/)
       (with-image clj-img)))
 
-(defn cljs [src & args]
-  (from clj
-    ($ apt-get update)
-    ($ apt-get -y install nodejs)))
-
 (defn clj-kondo [src & args]
   (from (linux/cljkondo/clj-kondo)
     (cd src
@@ -39,13 +35,14 @@
 (defn test-cljs [src]
   (clj src "-M:cljs-test"))
 
+(defn build-jar [src]
+  (clj src "-T:build" "jar"))
+
 (defn checks [src]
   {:lint      (lint src)
    :test-clj  (test-clj src)
-   :test-cljs (test-cljs src)})
-
-(defn run-checks [src]
-  (-> src checks vals list->source (each succeeds?)))
+   :test-cljs (test-cljs src)
+   :build-jar (build-jar src)})
 
 (defn main [& args]
   (for [event *stdin*]
