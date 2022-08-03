@@ -1,0 +1,361 @@
+memos: {
+  module: {
+    cmd: {
+      command: {
+        name: "run"
+      }
+    }
+  }
+  calls: {
+    binding: "resolve"
+    results: {
+      input: {
+        array: {
+          values: {
+            object: {
+              bindings: {
+                symbol: "platform"
+                value: {
+                  object: {
+                    bindings: {
+                      symbol: "os"
+                      value: {
+                        string: {
+                          value: "linux"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              bindings: {
+                symbol: "repository"
+                value: {
+                  string: {
+                    value: "alpine/git"
+                  }
+                }
+              }
+              bindings: {
+                symbol: "tag"
+                value: {
+                  string: {
+                    value: "latest"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      output: {
+        object: {
+          bindings: {
+            symbol: "platform"
+            value: {
+              object: {
+                bindings: {
+                  symbol: "os"
+                  value: {
+                    string: {
+                      value: "linux"
+                    }
+                  }
+                }
+              }
+            }
+          }
+          bindings: {
+            symbol: "repository"
+            value: {
+              string: {
+                value: "alpine/git"
+              }
+            }
+          }
+          bindings: {
+            symbol: "tag"
+            value: {
+              string: {
+                value: "latest"
+              }
+            }
+          }
+          bindings: {
+            symbol: "digest"
+            value: {
+              string: {
+                value: "sha256:760aaf0d59c93f87572ec40dee1efd10a7ea13a78dff1f59a904e908449329ae"
+              }
+            }
+          }
+        }
+      }
+    }
+    results: {
+      input: {
+        array: {
+          values: {
+            object: {
+              bindings: {
+                symbol: "platform"
+                value: {
+                  object: {
+                    bindings: {
+                      symbol: "os"
+                      value: {
+                        string: {
+                          value: "linux"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              bindings: {
+                symbol: "repository"
+                value: {
+                  string: {
+                    value: "clojure"
+                  }
+                }
+              }
+              bindings: {
+                symbol: "tag"
+                value: {
+                  string: {
+                    value: "tools-deps"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      output: {
+        object: {
+          bindings: {
+            symbol: "platform"
+            value: {
+              object: {
+                bindings: {
+                  symbol: "os"
+                  value: {
+                    string: {
+                      value: "linux"
+                    }
+                  }
+                }
+              }
+            }
+          }
+          bindings: {
+            symbol: "repository"
+            value: {
+              string: {
+                value: "clojure"
+              }
+            }
+          }
+          bindings: {
+            symbol: "tag"
+            value: {
+              string: {
+                value: "tools-deps"
+              }
+            }
+          }
+          bindings: {
+            symbol: "digest"
+            value: {
+              string: {
+                value: "sha256:7c586691cd42b289dcc3caeb24b04d78e1db7a2645d34808889cb15ab43ca8de"
+              }
+            }
+          }
+        }
+      }
+    }
+    results: {
+      input: {
+        array: {
+          values: {
+            object: {
+              bindings: {
+                symbol: "platform"
+                value: {
+                  object: {
+                    bindings: {
+                      symbol: "os"
+                      value: {
+                        string: {
+                          value: "linux"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              bindings: {
+                symbol: "repository"
+                value: {
+                  string: {
+                    value: "cljkondo/clj-kondo"
+                  }
+                }
+              }
+              bindings: {
+                symbol: "tag"
+                value: {
+                  string: {
+                    value: "latest"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      output: {
+        object: {
+          bindings: {
+            symbol: "platform"
+            value: {
+              object: {
+                bindings: {
+                  symbol: "os"
+                  value: {
+                    string: {
+                      value: "linux"
+                    }
+                  }
+                }
+              }
+            }
+          }
+          bindings: {
+            symbol: "repository"
+            value: {
+              string: {
+                value: "cljkondo/clj-kondo"
+              }
+            }
+          }
+          bindings: {
+            symbol: "tag"
+            value: {
+              string: {
+                value: "latest"
+              }
+            }
+          }
+          bindings: {
+            symbol: "digest"
+            value: {
+              string: {
+                value: "sha256:35ac20a07ccdd9272fe39214f7a445190a6e45b87cde7257592b831f9ca9cfb5"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+memos: {
+  module: {
+    cmd: {
+      command: {
+        name: "git"
+      }
+    }
+    stdin: {
+      object: {
+        bindings: {
+          symbol: "platform"
+          value: {
+            object: {
+              bindings: {
+                symbol: "os"
+                value: {
+                  string: {
+                    value: "linux"
+                  }
+                }
+              }
+            }
+          }
+        }
+        bindings: {
+          symbol: "repository"
+          value: {
+            string: {
+              value: "alpine/git"
+            }
+          }
+        }
+        bindings: {
+          symbol: "tag"
+          value: {
+            string: {
+              value: "latest"
+            }
+          }
+        }
+        bindings: {
+          symbol: "digest"
+          value: {
+            string: {
+              value: "sha256:760aaf0d59c93f87572ec40dee1efd10a7ea13a78dff1f59a904e908449329ae"
+            }
+          }
+        }
+      }
+    }
+  }
+  calls: {
+    binding: "ls-remote"
+    results: {
+      input: {
+        array: {
+          values: {
+            string: {
+              value: "https://github.com/vito/bass-loop"
+            }
+          }
+          values: {
+            string: {
+              value: "main"
+            }
+          }
+        }
+      }
+      output: {
+        string: {
+          value: "11355fd756fcdfd60084de1b145223ef281c54aa"
+        }
+      }
+    }
+    results: {
+      input: {
+        array: {
+          values: {
+            string: {
+              value: "https://github.com/axvr/refrain"
+            }
+          }
+          values: {
+            string: {
+              value: "master"
+            }
+          }
+        }
+      }
+      output: {
+        string: {
+          value: "73ab3d08e55a0a33aaba4e5327553bf558b68e86"
+        }
+      }
+    }
+  }
+}
