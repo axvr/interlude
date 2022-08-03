@@ -10,4 +10,7 @@
   :cljs-test {:extra-paths ["test"]
               :extra-deps {org.clojure/clojurescript {:mvn/version "1.10.520"}
                            olical/cljs-test-runner   {:mvn/version "3.8.0"}}
-              :main-opts ["-m" "cljs-test-runner.main"]}}}
+              :main-opts ["-m" "cljs-test-runner.main"]}
+  :build {:deps {io.github.seancorfield/build-clj
+                 {:git/tag "v0.8.3" :git/sha "7ac1f8d"}}
+          :ns-default build}}}
