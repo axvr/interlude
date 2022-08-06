@@ -12,6 +12,7 @@
   (-> opts
       (assoc :lib lib :version version)
       (bb/clean)
+      (assoc :src-pom "target/pom.xml")
       (bb/jar)))
 
 (defn install
