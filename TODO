@@ -1,2 +1,2 @@
-- Run CI tests on ClojureScript and ClojureCLR too?
+- Run CI tests on ClojureCLR too?
 - queue and queue? (like in Medley)
