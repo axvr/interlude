@@ -5,8 +5,8 @@
 
   (defn with-clj-cache [thunk]
     (-> thunk
-        (with-mount (cache-dir "Java M2 cache") /root/.m2/)
-        (with-mount (cache-dir "Clojure Git cache") /root/.gitlibs/)))
+        (with-mount (cache-dir "java-m2-cache") /root/.m2/repository/)
+        (with-mount (cache-dir "clojure-git-cache") /root/.gitlibs/)))
 
   (def clj-img
     (from (linux/clojure :tools-deps)
