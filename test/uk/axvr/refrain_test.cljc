@@ -12,8 +12,9 @@
   "Unit tests for the `uk.axvr.refrain` namespace/library."
   (:require [clojure.test :refer [deftest testing is]]
             [uk.axvr.refrain :as r])
-  #?(:clj  (:import [java.time Instant])
-     :cljs (:require-macros [uk.axvr.refrain :as r])))
+  #?@(:clj  [(:import [java.time Instant])]
+      :cljs [(:require-macros [uk.axvr.refrain :as r])
+             (:refer-clojure :exclude [regexp?])]))
 
 (defrecord TestRecord [foo])
 
@@ -127,20 +128,18 @@
     (is (false? (r/derefable? 42)))
     (is (false? (r/derefable? (+ 1 2 3))))))
 
-#?(:cljs (comment "ClojureScript already has a \"regexp?\" function.")
-   :default
-   (deftest regexp?
-     (testing "True for regexp literal."
-       (is (true? (r/regexp? #"")))
-       (is (true? (r/regexp? #"\w+"))))
-     (testing "True for result of `clojure.core/re-pattern` call."
-       (is (true? (r/regexp? (re-pattern ""))))
-       (is (true? (r/regexp? (re-pattern "\\w+")))))
-     (testing "False on nil."
-       (is (false? (r/regexp? nil))))
-     (testing "False on string."
-       (is (false? (r/regexp? "")))
-       (is (false? (r/regexp? "\\w+"))))))
+(deftest regexp?
+  (testing "True for regexp literal."
+    (is (true? (r/regexp? #"")))
+    (is (true? (r/regexp? #"\w+"))))
+  (testing "True for result of `clojure.core/re-pattern` call."
+    (is (true? (r/regexp? (re-pattern ""))))
+    (is (true? (r/regexp? (re-pattern "\\w+")))))
+  (testing "False on nil."
+    (is (false? (r/regexp? nil))))
+  (testing "False on string."
+    (is (false? (r/regexp? "")))
+    (is (false? (r/regexp? "\\w+")))))
 
 (deftest contrast
   (testing "Contrast strings."

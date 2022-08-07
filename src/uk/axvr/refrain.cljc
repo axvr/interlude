@@ -13,7 +13,8 @@
   "Collection of useful Clojure utilities."
   (:require [clojure.string :as str]
             #?@(:clj [[clojure.edn     :as edn]
-                      [clojure.java.io :as io]])))
+                      [clojure.java.io :as io]]))
+  #?(:cljs (:refer-clojure :exclude [regexp?])))
 
 
 ;;; Core
@@ -59,7 +60,12 @@
    (defn regexp?
      "Returns true if x is a .NET regular expression pattern."
      [x]
-     (instance? System.Text.RegularExpressions.Regex x)))
+     (instance? System.Text.RegularExpressions.Regex x))
+   :cljs
+   (def regexp?
+     "Alias to `cljs.core/regexp?`.  This exists purely to make writing *.cljc
+     files that need `regexp?` easier."
+     cljs.core/regexp?))
 
 (defn contrast
   "Contrast multiple comparable objects with each other with op.  (Wrapper
