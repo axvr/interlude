@@ -1,48 +1,9 @@
 #!/usr/bin/env bass
 
-(def *memos* *dir*/bass.lock)
-
-(use (.git (linux/alpine/git))
+(use (*dir*/refrain.bass)
+     (.git (linux/alpine/git))
      (git:github/vito/bass-loop/ref/main/bass/github.bass))
 
-(def m2-cache (cache-dir "Java M2 cache"))
-(def gitlibs-cache (cache-dir "Clojure Git cache"))
-
-(def clj-img
-  (from (linux/clojure :tools-deps)
-    ($ apt-get update)
-    ($ apt-get -y install nodejs)))
-
-(defn clj [src & args]
-  (-> ($ clojure & $args)
-      (with-dir src)
-      (with-mount m2-cache /root/.m2/)
-      (with-mount gitlibs-cache /root/.gitlibs/)
-      (with-image clj-img)))
-
-(defn clj-kondo [src & args]
-  (from (linux/cljkondo/clj-kondo)
-    (cd src
-      ($ clj-kondo & $args))))
-
-(defn lint [src]
-  (clj-kondo src "--lint" "src"))
-
-(defn test-clj [src]
-  (clj src "-X:test"))
-
-(defn test-cljs [src]
-  (clj src "-M:cljs-test"))
-
-(defn build-jar [src]
-  (clj src "-T:build" "jar"))
-
-(defn checks [src]
-  {:lint      (lint src)
-   :test-clj  (test-clj src)
-   :test-cljs (test-cljs src)
-   :build-jar (build-jar src)})
-
-(defn main [& args]
+(defn main args
   (for [event *stdin*]
-    (github:check-hook event git:checkout checks)))
+    (github:check-hook event git:checkout refrain:checks)))

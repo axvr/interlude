@@ -1,0 +1,2 @@
+(provide [root]
+  (def root *dir*))
