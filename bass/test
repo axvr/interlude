@@ -1,7 +1,6 @@
 #!/usr/bin/env bass
 
-(use (*dir*/refrain.bass)
-     (.git (linux/alpine/git)))
+(use (*dir*/refrain.bass))
 
 (defn run-checks [src]
   (-> src (refrain:checks) vals list->source (each succeeds?)))

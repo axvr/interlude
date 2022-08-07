@@ -1,5 +1,4 @@
 # See: https://ascribe.axvr.uk
 *  text=auto  final-newline  expand-tab  tab-stop=2  trim-trailing-whitespace  eol=lf
-*.bass          linguist-language=Clojure
-bass/*          vim-filetype=bass  linguist-language=Clojure
-bass/bass.lock  vim-filetype=json  linguist-language=JSON
+*.bass  linguist-language=Clojure
+bass/*  linguist-language=Clojure  vim-filetype=bass
