@@ -28,3 +28,7 @@ use Bass, leave a comment on the PR saying so and I'll run them myself.
 
 Before pushing changes you can also run the CI tests manually with the included
 `./bass/test` script.
+
+```sh
+./bass/test -i src=./
+```

@@ -1,18 +1,11 @@
 #!/usr/bin/env bass
 
-(use (*dir*/../project.bass)
-     (*dir*/refrain.bass)
+(use (*dir*/refrain.bass)
      (.git (linux/alpine/git)))
 
 (defn run-checks [src]
   (-> src (refrain:checks) vals list->source (each succeeds?)))
 
 (defn main args
-  (run-checks
-    (if (> (length args) 0)
-      (let [url (if (= (length args) 2)
-                  (first args)
-                  "https://github.com/axvr/refrain")
-            tag (last (list->source args))]
-        (git:checkout url (git:ls-remote url tag)))
-      project:root)))
+  (for [{:src src} *stdin*]
+    (run-checks src)))
