@@ -84,7 +84,10 @@
 (defn in?
   "Returns true if coll contains elm."
   [coll elm]
-  (boolean (some #(= elm %) coll)))
+  (cond
+    (set? coll)     (contains? coll elm)
+    (seqable? coll) (boolean (some #(= elm %) coll))
+    :else           false))
 
 ;; Copyright © 2016 Rich Hickey.
 ;; https://github.com/clojure/spec-alpha2/blob/74ada9d5111aa17c27fdef9c626ac6b4b1551a3e/src/test/clojure/clojure/test_clojure/spec.clj#L18,L25
@@ -102,10 +105,10 @@
   "Internal deep-merge-with algorithm."
   [f c1 c2]
   (if (coll? c1)
-     (if (and (coll? c2) (map? c1))
-       (merge-with (partial deep-merge-with' f) c1 c2)
-       (f c1 c2))
-     c2))
+    (if (and (coll? c2) (map? c1))
+      (merge-with (partial deep-merge-with' f) c1 c2)
+      (f c1 c2))
+    c2))
 
 (defn deep-merge-with
   "Like `clojure.core/merge-with`, but recursively merges maps."
