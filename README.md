@@ -33,6 +33,18 @@ Add the following to your `project.clj` file:
 ```
 
 
+## Contributing
+
+Before working on code changes, please note that PRs adding new functions or
+macros are unlikely to be accepted.  However, PRs containing fixes to existing
+ones, may be merged if they don't cause regressions.
+
+```shell
+clojure -X:test       # Run tests on Clojure (JVM)
+clojure -M:cljs-test  # Run tests on ClojureScript (JS)
+```
+
+
 ## Legal
 
 - Copyright © 2022 Alex Vear.

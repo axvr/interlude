@@ -1,2 +1,6 @@
+- with-require - if namespace exists, requires it, and runs code with the wanted vars from it.
+    (with-require [[clojure.tools.logging :as log]]
+      (log/info "Log something"))
+
 - Run CI tests on ClojureCLR too?
 - queue and queue? (like in Medley)
