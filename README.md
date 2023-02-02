@@ -15,22 +15,22 @@ use both at the same time as they mostly contain different things.
 
 ## Installation
 
-### tools.deps
+[![Clojars](https://img.shields.io/clojars/v/uk.axvr/refrain.svg)](https://clojars.org/uk.axvr/refrain)
 
-Add the following to your `deps.edn` file:
-
-```clojure
-{:deps {uk.axvr/refrain {:mvn/version "0.1"}}}
-```
-
-
-### Leiningen
-
-Add the following to your `project.clj` file:
+[tools.deps][]: Add the following to your `deps.edn` file:
 
 ```clojure
-[uk.axvr/refrain "0.1"]
+uk.axvr/refrain {:mvn/version "0.2"}
 ```
+
+[Leiningen][]: add the following to your `project.clj` file:
+
+```clojure
+[uk.axvr/refrain "0.2"]
+```
+
+[tools.deps]: https://clojure.org/reference/deps_and_cli
+[Leiningen]: https://leiningen.org
 
 
 ## Contributing
