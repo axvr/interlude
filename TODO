@@ -1,6 +1,9 @@
+- Switch to pure tools.build
+
 - with-require - if namespace exists, requires it, and runs code with the wanted vars from it.
     (with-require [[clojure.tools.logging :as log]]
       (log/info "Log something"))
+    - Might not be needed in Clojure 1.12.
 
 - Run CI tests on ClojureCLR too?
 - queue and queue? (like in Medley)
