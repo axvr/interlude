@@ -11,13 +11,14 @@
 (def class-dir "target/classes")
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
 
-(defn clean [_]
+(defn clean
   "Clean the targets folder."
+  [_opts]
   (b/delete {:path "target"}))
 
 (defn jar
   "Build the JAR."
-  [opts]
+  [_opts]
   (clean nil)
   (b/copy-dir {:src-dirs ["src"]
                :target-dir class-dir})
@@ -32,7 +33,7 @@
 
 (defn install
   "Install the JAR locally."
-  [opts]
+  [_opts]
   (b/install
     {:basis      basis
      :lib        lib
@@ -42,7 +43,7 @@
 
 (defn deploy
   "Deploy the JAR to Clojars."
-  [opts]
+  [_opts]
   (dd/deploy {:installer :remote
               :artifact (b/resolve-path jar-file)
               :pom-file (b/pom-path {:lib lib, :class-dir class-dir})}))
