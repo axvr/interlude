@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <name>refrain</name>
   <description>Collection of useful Clojure utilities.</description>
-  <url>https://git.axvr.uk/refrain</url>
+  <url>https://github.com/axvr/refrain</url>
   <licenses>
     <license>
       <name>Eclipse Public License 1.0</name>
