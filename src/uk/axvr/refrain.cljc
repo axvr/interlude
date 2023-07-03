@@ -176,7 +176,9 @@
 #?(:clj
    (defn read-edn-resource
      "Read an EDN file at path from JVM resources."
-     [path]
-     (when-let [rsc (some-> path io/resource)]
-       (with-open [rdr (io/reader rsc)]
-         (edn/read (java.io.PushbackReader. rdr))))))
+     ([path]
+      (read-edn-resource path {}))
+     ([path opts]
+      (when-let [rsc (some-> path io/resource)]
+        (with-open [rdr (io/reader rsc)]
+          (edn/read opts (java.io.PushbackReader. rdr)))))))
