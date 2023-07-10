@@ -20,13 +20,13 @@ use both at the same time as they mostly contain different things.
 [tools.deps][]: Add the following to your `deps.edn` file:
 
 ```clojure
-uk.axvr/refrain {:mvn/version "0.2"}
+uk.axvr/refrain {:mvn/version "0.3"}
 ```
 
 [Leiningen][]: add the following to your `project.clj` file:
 
 ```clojure
-[uk.axvr/refrain "0.2"]
+[uk.axvr/refrain "0.3"]
 ```
 
 [tools.deps]: https://clojure.org/reference/deps_and_cli
