@@ -1,6 +1,6 @@
 ;;;; All rights reserved.
 ;;;;
-;;;; Copyright © 2022 Alex Vear.
+;;;; Copyright © 2022, 2023 Alex Vear.
 ;;;; Copyright © 2009, 2016 Rich Hickey.
 ;;;;
 ;;;;   The use and distribution terms for this software are covered by the
@@ -182,3 +182,39 @@
       (when-let [rsc (some-> path io/resource)]
         (with-open [rdr (io/reader rsc)]
           (edn/read opts (java.io.PushbackReader. rdr)))))))
+
+(defmacro ->map
+  "Like `{}` but can omit keys when you want it to be the same as the symbol
+  bound to the value.  Useful for avoiding unnecessary repetition during map
+  construction.  At >9 key-value pairs, switches from an array-map to
+  a hash-map just like `{}`.
+
+      (let [[a b c d] (range)]
+        (->map a b :c1 c d))
+      ;; => {:a 0, :b 1, :c1 2, :d 3}"
+  [& ks]
+  (let [kvs (loop [acc []
+                   [a b :as rst] ks]
+              (if (seq rst)
+                (if (symbol? a)
+                  (recur (conj acc (keyword a) a)
+                         (next rst))
+                  (recur (conj acc a b)
+                         (nnext rst)))
+                acc))]
+    ;; Switch to hash-map at 9+ elements.
+    `(~(if (> 18 (count kvs)) `array-map `hash-map)
+      ~@kvs)))
+
+(defn- quote*
+  "Convert a symbol to a quoted symbol (intended for use in macros)."
+  [x]
+  `'~x)
+
+(defmacro with-gensyms
+  "Bulk generate \"gensym\" values and bind them to each symbol in \"syms\"."
+  [syms & body]
+  `(let ~(into []
+               (mapcat (juxt identity (comp quote* gensym name)))
+               syms)
+     ~@body))
