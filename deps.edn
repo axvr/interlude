@@ -1,17 +1,17 @@
 {:paths ["src"]
- :deps {org.clojure/clojure {:mvn/version "1.11.1" :mvn/scope "provided"}}
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}}
  :aliases
  {:test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner
                       {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
          :exec-fn cognitect.test-runner.api/test}
-  :cljs-repl {:extra-deps {org.clojure/clojurescript {:mvn/version "1.11.60"}}
+  :cljs-repl {:extra-deps {org.clojure/clojurescript {:mvn/version "1.11.121"}}
               :main-opts ["-m" "cljs.main" "--repl"]}
   :cljs-test {:extra-paths ["test"]
-              :extra-deps {org.clojure/clojurescript {:mvn/version "1.11.60"}
+              :extra-deps {org.clojure/clojurescript {:mvn/version "1.11.121"}
                            olical/cljs-test-runner   {:mvn/version "3.8.0"}}
               :main-opts ["-m" "cljs-test-runner.main"]}
   :build {:extra-paths ["build"]
-          :deps {io.github.clojure/tools.build {:git/tag "v0.9.4" :git/sha "76b78fe"}
-                 slipset/deps-deploy {:mvn/version "0.2.1"}}
+          :deps {io.github.clojure/tools.build {:git/tag "v0.9.6" :git/sha "8e78bcc"}
+                 slipset/deps-deploy {:mvn/version "0.2.2"}}
           :ns-default build}}}
