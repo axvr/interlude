@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.2
 
       - name: Install Clj-kondo
-        uses: DeLaGuardo/setup-clojure@12.1
+        uses: DeLaGuardo/setup-clojure@12.5
         with:
           clj-kondo: latest
 
@@ -22,12 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.2
 
       - name: Install Clojure
-        uses: DeLaGuardo/setup-clojure@12.1
+        uses: DeLaGuardo/setup-clojure@12.5
         with:
-          cli: 1.11.1.1429
+          cli: 1.11.2.1446
 
       - name: Run tests
         run: clojure -X:test
@@ -37,12 +37,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.2
 
       - name: Install Clojure
-        uses: DeLaGuardo/setup-clojure@12.1
+        uses: DeLaGuardo/setup-clojure@12.5
         with:
-          cli: 1.11.1.1429
+          cli: 1.11.2.1446
 
       - name: Run tests
         run: clojure -M:cljs-test
