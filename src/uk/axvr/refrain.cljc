@@ -218,3 +218,41 @@
                (mapcat (juxt identity (comp quote* gensym name)))
                syms)
      ~@body))
+
+(defn expect'
+  "Implementation detail of the `expect` macro.  Do not use this directly."
+  [pform pval msg]
+  (let [msg (str (or msg "Assertion failed") " - (" (pr-str pform) " %)")]
+    (fn [data]
+      (when (and *assert* (not (pval data)))
+        (throw
+         #?(:clj (AssertionError. msg)
+            :default (ex-info msg {}))))
+      data)))
+
+(defmacro expectation
+  "Constructs and returns an assertion function that checks input against
+  a predicate, returns given input on success.
+
+      (def successful-resp? #(<= 200 % 299))
+
+      (def fetch
+        (comp :body (expectation successful-resp?) http/get))
+
+      (-> \"https://example.com\" fetch :body)"
+  ([pred]
+   `(expectation ~pred nil))
+  ([pred msg]
+   `(expect' '~pred ~pred ~msg)))
+
+(defmacro expect
+  "Perform an assertion against a predicate.  Returns `data` on success.
+
+      (-> {:status 200, :body \"Foo bar\"}
+          (expect (comp #{200 201 202} :status)
+                  \"HTTP response status code was not successful.\")
+          :body)"
+  ([data pred]
+   `(expect ~data ~pred nil))
+  ([data pred msg]
+   `((expectation ~pred ~msg) ~data)))
