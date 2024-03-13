@@ -1,6 +1,6 @@
 ;;;; All rights reserved.
 ;;;;
-;;;; Copyright © 2022, 2023 Alex Vear.
+;;;; Copyright © 2022–2024 Alex Vear.
 ;;;; Copyright © 2009, 2016 Rich Hickey.
 ;;;;
 ;;;;   The use and distribution terms for this software are covered by the

@@ -47,7 +47,7 @@ clojure -M:cljs-test  # Run tests on ClojureScript (JS)
 
 ## Legal
 
-- Copyright © 2022 Alex Vear.
+- Copyright © 2022–2024 Alex Vear.
 - Copyright © 2009, 2016 Rich Hickey.
 
 The use and distribution terms for this software are covered by the
